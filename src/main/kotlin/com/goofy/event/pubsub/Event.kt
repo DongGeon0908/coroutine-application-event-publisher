@@ -7,32 +7,30 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
-sealed class Event<EVENT_DATA>(
-    val event: String,
-    val data: EVENT_DATA,
-    val publishedAt: LocalDateTime = LocalDateTime.now()
-)
+interface Event {
+    val event: String
+    val publishedAt: LocalDateTime
+}
 
 @Component
 class EventPublisher(
     private val applicationEventPublisher: ApplicationEventPublisher
 ) {
-    fun <EVENT_DATA> publish(event: Event<EVENT_DATA>) {
+    fun publish(event: Event) {
         applicationEventPublisher.publishEvent(event)
     }
 
-
-    fun <EVENT_DATA> multiPublish(events: List<Event<EVENT_DATA>>) {
+    fun multiPublish(events: List<Event>) {
         events.forEach { event -> publish(event) }
     }
 
-    suspend fun <EVENT_DATA> publishWithContext(event: Event<EVENT_DATA>) {
+    suspend fun publishWithContext(event: Event) {
         CoroutineScope(Dispatchers.IO).launch {
             publish(event)
         }
     }
 
-    suspend fun <EVENT_DATA> multiPublishWithContext(events: List<Event<EVENT_DATA>>) {
+    suspend fun multiPublishWithContext(events: List<Event>) {
         events.forEach { event ->
             CoroutineScope(Dispatchers.IO).launch {
                 publish(event)
