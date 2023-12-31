@@ -1,6 +1,5 @@
 package com.goofy.event.domain
 
-import com.goofy.event.domain.BaseEntity
 import com.goofy.event.domain.vo.TodoCategory
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
